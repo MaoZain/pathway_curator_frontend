@@ -45,7 +45,7 @@ export default class History extends Component {
 
     fetch_getHistoryInfo = () => {
         var raw = JSON.stringify({"user_name":localStorage.pathway});
-        // console.log(raw)
+        console.log(raw)
         let user = "123"
         var requestOptions = {
             method: 'POST',
@@ -55,7 +55,7 @@ export default class History extends Component {
             body:raw,
             // 'mode':'no-cors'
         };
-        fetch("/back/get_history_info", requestOptions)
+        fetch( process.env.REACT_APP_API + "/back/get_history_info", requestOptions)
         .then(response => response.json())
         .then(info => this.fn_getHistoryInfo(info))
         .catch(error => console.log('error', error));

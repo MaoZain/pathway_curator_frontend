@@ -98,7 +98,7 @@ export default class Main extends PureComponent {
                 body:raw,
                 // 'mode':'no-cors'
             };
-            fetch("/back/get_historyFigure_info", requestOptions)
+            fetch(process.env.REACT_APP_API +"/back/get_historyFigure_info", requestOptions)
             .then(response => response.json())
             .then(info => resolve(info))
             .catch(error => console.log('error', error));
@@ -107,7 +107,7 @@ export default class Main extends PureComponent {
     }
 
     render() {
-        console.log("b">"azzz")
+        console.log( process.env.REACT_APP_API )
         // console.log(localStorage)
         let menu = (
             <div style={{width:'16vw'}}>
