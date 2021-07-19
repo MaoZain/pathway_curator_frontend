@@ -40,22 +40,15 @@ export default class History extends Component {
     }
 
     componentDidMount = () => {
-        this.fetch_getHistoryInfo()
+        this.fetch_AllHistory()
     }
 
-    fetch_getHistoryInfo = () => {
-        var raw = JSON.stringify({"user_name":localStorage.pathway});
-        console.log(raw)
-        let user = "123"
+    fetch_AllHistory = () => {
+        console.log(localStorage.pathway)
         var requestOptions = {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body:raw,
-            // 'mode':'no-cors'
+            method: 'get',
         };
-        fetch( process.env.REACT_APP_API + "/back/get_history_info", requestOptions)
+        fetch( process.env.REACT_APP_API + "/get_allhistory_info/?user_name="+localStorage.pathway, requestOptions)
         .then(response => response.json())
         .then(info => this.fn_getHistoryInfo(info))
         .catch(error => console.log('error', error));
@@ -68,9 +61,9 @@ export default class History extends Component {
         })
     }
 
-    fn_history_showFiureInfo = (figId) => {
+    fn_showHistoryResult = (figId) => {
         // console.log(index);
-        this.props.fn_history_showFigureInfo(figId);
+        this.props.fn_showHistoryResult(figId);
     }
 
     test = (pp) =>{
@@ -105,7 +98,7 @@ export default class History extends Component {
                                         size='small' 
                                         style={{background:'rgb(47, 101, 203)', color:'white'}} 
                                         id={e.fig_id} 
-                                        onClick={this.fn_history_showFiureInfo.bind(this, e.fig_id)} >Show</Button>
+                                        onClick={this.fn_showHistoryResult.bind(this, e.fig_id)} >Show</Button>
                                     <Button variant='contained' 
                                         size='small' 
                                         color='secondary' 

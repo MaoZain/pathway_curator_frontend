@@ -65,9 +65,9 @@ export default class Main extends PureComponent {
         console.log(localStorage)
     }
 
-    fn_history_showFigureInfo = async(index) => {
+    fn_showHistoryResult = async(index) => {
         // console.log(index);
-        let info = await this.fetch_getFigureInfo(index)
+        let info = await this.fetch_historyResult(index)
         console.log(info)
         this.setState({
             figureInfo:info.figure[0],      // [array]: width height fig_id fig_name fig_path
@@ -86,19 +86,14 @@ export default class Main extends PureComponent {
         })
     }
 
-    fetch_getFigureInfo = (figId) => {
+    fetch_historyResult = (figId) => {
         return new Promise((resolve, reject) => {
             // console.log(figId);
             var raw = JSON.stringify({ "user_name":localStorage.pathway, "figId":figId });
             var requestOptions = {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body:raw,
-                // 'mode':'no-cors'
+                method: 'get',
             };
-            fetch(process.env.REACT_APP_API +"/back/get_historyFigure_info", requestOptions)
+            fetch(process.env.REACT_APP_API +"/get_result/?figId="+figId, requestOptions)
             .then(response => response.json())
             .then(info => resolve(info))
             .catch(error => console.log('error', error));
@@ -158,7 +153,7 @@ export default class Main extends PureComponent {
             content = (
                 <div>
                     <History 
-                        fn_history_showFigureInfo = {this.fn_history_showFigureInfo} />
+                        fn_showHistoryResult = {this.fn_showHistoryResult} />
                 </div>
             );
         }else if(this.state.current_page == 'result'){
