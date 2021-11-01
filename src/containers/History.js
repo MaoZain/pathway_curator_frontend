@@ -1,5 +1,7 @@
 import React, { Component } from "react";
-import { Typography, Divider, Button } from "@material-ui/core";
+import { Button } from "antd";
+import { Typography, Divider } from "@material-ui/core";
+import { alpha, styled } from "@mui/material/styles";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
@@ -7,6 +9,11 @@ import TableContainer from "@material-ui/core/TableContainer";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
+import Collapse from "@mui/material/Collapse";
+import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
+import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
+import Box from "@mui/material/Box";
+import LinearProgress from '@mui/material/LinearProgress';
 
 /**
  * @description History component, display history records.
@@ -15,24 +22,43 @@ import Paper from "@material-ui/core/Paper";
  * @class History
  * @extends {Component}
  */
+var fetch_history_timer
+ function LinearProgressWithLabel(props) {
+  return (
+    <Box sx={{ display: 'flex', alignItems: 'center' }}>
+      <Box sx={{ width: '100%', mr: 1 }}>
+        <LinearProgress color={props.value === 100? 'primary':'secondary'} variant="determinate" {...props} />
+      </Box>
+      <Box sx={{ minWidth: 35 }}>
+        <Typography variant="body2" color="text.secondary">{`${Math.round(
+          props.value,
+        )}%`}</Typography>
+      </Box>
+    </Box>
+  );
+}
 export default class History extends Component {
   constructor(props) {
     super(props);
     this.state = {
       historyInfo: [],
+      expand_table_name: "",
+      job_names:[],
+      current_page:this.props.current_page
     };
   }
 
   componentDidMount = () => {
     this.fetch_AllHistory();
+    fetch_history_timer = setInterval(()=>this.fetch_AllHistory(),3000)
   };
+
 
   componentDidCatch(error, info) {
     console.log(error, info);
   }
 
   fetch_AllHistory = () => {
-    // console.log(localStorage.pathway)
     var requestOptions = {
       method: "get",
     };
@@ -48,9 +74,19 @@ export default class History extends Component {
   };
 
   fn_getHistoryInfo = (info) => {
-    // console.log(info)
+    if(info.unfinished_figs  == 0){
+      clearInterval(fetch_history_timer);
+      fetch_history_timer = null;
+    }
+    console.log(info);
+    let job_names = []
+    for(let key in info.info){
+      job_names.push(key)
+    }
+    // job_names=job_names.reverse
     this.setState({
-      historyInfo: info,
+      job_names:job_names.reverse(),
+      historyInfo: info.info,
     });
   };
 
@@ -81,57 +117,138 @@ export default class History extends Component {
       })
       .catch((error) => console.log("error", error));
   };
+  expand_table = (name) => {
+    if (name === this.state.expand_table_name) {
+      this.setState({
+        expand_table_name: "",
+      });
+    } else {
+      this.setState({
+        expand_table_name: name,
+      });
+    }
+  };
 
   render() {
+    console.log(this.state.current_page)
     // const classes = useStyles();
     // console.log(rows)
     let history_list = (
       <div>
-        <TableContainer component={Paper}>
+        <TableContainer component={Paper} style={{ backgroundColor: "" }}>
           <Table stickyHeader aria-label="simple table">
             <TableHead>
               <TableRow>
-                <TableCell>ID</TableCell>
-                <TableCell align="left">JobName</TableCell>
-                <TableCell align="left">FigureName</TableCell>
-                <TableCell align="center">Action</TableCell>
+                <TableCell />
+                <TableCell><p>ID</p></TableCell>
+                <TableCell align="left"><p>Job Name</p></TableCell>
+                <TableCell align="center"><p># Of Figure</p></TableCell>
+                <TableCell align="center"><p>% of Processing</p></TableCell>
+                <TableCell align="center"><p>Del</p></TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              {this.state.historyInfo.map((e, i) => (
-                <TableRow key={e.name}>
-                  <TableCell width="10%">{i + 1}</TableCell>
-                  <TableCell width="40%" align="left">
-                    {e.job_name}
-                  </TableCell>
-                  <TableCell align="left" width="25%">
-                    {e.fig_name}
-                  </TableCell>
-                  <TableCell align="center" width="25%">
-                    <Button
-                      variant="contained"
-                      size="small"
-                      style={{
-                        background: "rgb(47, 101, 203)",
-                        color: "white",
-                      }}
-                      id={e.fig_id}
-                      onClick={this.fn_showHistoryResult.bind(this, e.fig_id)}
+              {
+            
+              this.state.job_names.map((e, i) => (
+                <React.Fragment>
+                  <TableRow key={e}>
+                    <TableCell width="5%">
+                      <Button
+                        shape="circle"
+                        onClick={this.expand_table.bind(this, e)}
+                      >
+                        {this.state.expand_table_name === e ? (
+                          <KeyboardArrowUpIcon />
+                        ) : (
+                          <KeyboardArrowDownIcon />
+                        )}
+                      </Button>
+                    </TableCell>
+                    <TableCell width="5%"><p>{i + 1}</p></TableCell>
+                    <TableCell width="30%" align="left">
+                    <p>{e}</p>
+                    </TableCell>
+                    <TableCell align="center" width="10%">
+                    <p>{this.state.historyInfo[e].length}</p>
+                    </TableCell>
+                    <TableCell align="center" width="30%">
+                    <LinearProgressWithLabel value={this.state.historyInfo[e][0].processing} />
+                      
+                    </TableCell>
+                    <TableCell align="center" width="20%">
+                    <p>del</p>
+                    </TableCell>
+                 
+                  </TableRow>
+                  <TableRow>
+                    <TableCell
+                      style={{ paddingBottom: 0, paddingTop: 0 }}
+                      colSpan={6}
                     >
-                      Show
-                    </Button>
-                    <Button
-                      variant="contained"
-                      size="small"
-                      color="secondary"
-                      id={e.fig_id}
-                      onClick={() => this.test(e.fig_id, e.job_id)}
-                      style={{ marginLeft: "10px" }}
-                    >
-                      Delete
-                    </Button>
-                  </TableCell>
-                </TableRow>
+                      <Collapse
+                        id={e}
+                        key={e}
+                        in={this.state.expand_table_name === e}
+                        timeout="auto"
+                        unmountOnExit
+                      >
+                        <Box sx={{ margin: 1 }}>
+                          <Table size="small" aria-label="purchases">
+                            <TableHead>
+                              <TableRow>
+                                <TableCell><p>Figure Name</p></TableCell>
+                         
+                                <TableCell><p>Status</p></TableCell>
+                                <TableCell align="center"><p>Action</p></TableCell>
+                              </TableRow>
+                            </TableHead>
+                            <TableBody>
+                              {
+                                this.state.historyInfo[e].map((fig,i)=>(
+                                  <TableRow>
+                                  <TableCell><p>{fig.fig_name}</p></TableCell>
+                                  <TableCell>{fig.predict_status===1? <p style={{color:"#2f65cb"}}>successful</p>:<p style={{color:"rgb(156 39 176)"}}>pending</p>}</TableCell>
+                             
+                                  <TableCell align="center">
+                                    <Button
+                                      disabled={!fig.predict_status}
+                                      variant="contained"
+                                      size="small"
+                                      type="primary"
+                                      id={e.fig_id}
+                                      onClick={this.fn_showHistoryResult.bind(
+                                        this,
+                                        fig.fig_id
+                                      )}
+                                    >
+                                      <p>Show</p>
+                                    </Button>
+                                    <Button
+                                     disabled={!fig.predict_status}
+                                      variant="contained"
+                                      size="small"
+                                      type="secondary"
+                                      id={e.fig_id}
+                                      onClick={() =>
+                                        this.test(e.fig_id, e.job_id)
+                                      }
+                                      style={{ marginLeft: "10px" }}
+                                    >
+                                      <p>Delete</p>
+                                    </Button>
+                                  </TableCell>
+                                </TableRow>
+                                ))
+                              }
+                             
+                            </TableBody>
+                          </Table>
+                        </Box>
+                      </Collapse>
+                    </TableCell>
+                  </TableRow>
+                </React.Fragment>
               ))}
             </TableBody>
           </Table>
@@ -141,22 +258,7 @@ export default class History extends Component {
 
     return (
       <div>
-        <Typography
-          style={{
-            fontWeight: "600",
-            fontSize: "1.5rem",
-            marginTop: "3vw",
-            marginLeft: "4vh",
-          }}
-        >
-          History
-        </Typography>
-        <Divider
-          style={{ marginLeft: "2vw", width: "78vw", marginTop: "4vh" }}
-        ></Divider>
-        <div style={{ width: "78vw", marginLeft: "2vw", marginTop: "3vh" }}>
-          {history_list}
-        </div>
+        <div>{history_list}</div>
       </div>
     );
   }

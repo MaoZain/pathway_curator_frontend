@@ -32,6 +32,7 @@ export default class InputData extends Component {
       <div>
         <Steps current={current_step} onChange={this.onChangeSteps}>
           <Step
+            color="white"
             title="Input Pathway"
             // description="Workflow of G2PDeep."
           />
@@ -63,11 +64,10 @@ export default class InputData extends Component {
           <div style={{ width: "70vw" }}>
             <Row>
               <Col>
-                {step_comp}
+                {/* {step_comp} */}
                 {/* {step_content} */}
-                <br></br>
-                <br></br>
-                <br></br>
+        
+
                 <img
                   alt="Introduction"
                   src={step_img}

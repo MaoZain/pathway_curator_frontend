@@ -353,9 +353,10 @@ export default class Result extends PureComponent {
             this.props.geneInfo.map((value, index) => {
               // console.log(value)
               let scale_of_bbox =
-                (this.state.sizeOfFigure * this.state.innerWidth) /
+                (window.innerWidth) /
                 100 /
                 this.props.figureInfo[0].width;
+              console.log(scale_of_bbox)
               let geneBbox = {
                 position: "absolute",
                 top: value.gene_BBox.split(",")[1] * scale_of_bbox - 2.5 + "px",
@@ -501,7 +502,7 @@ export default class Result extends PureComponent {
     );
     // console.log(this.state.resultStatus)
     let loading = (
-      <div style={{ marginLeft: "4vh", width: "78vw", marginTop: "4vh" }}>
+      <div >
         <Spin spinning={this.state.loading} size="large">
           <Alert
             message="Alert message title"
@@ -513,19 +514,6 @@ export default class Result extends PureComponent {
     );
     return (
       <div>
-        <Typography
-          style={{
-            fontWeight: "600",
-            fontSize: "1.5rem",
-            marginTop: "3vw",
-            marginLeft: "4vh",
-          }}
-        >
-          Result
-        </Typography>
-        <Divider
-          style={{ marginLeft: "4vh", width: "78vw", marginTop: "4vh" }}
-        ></Divider>
         <div
           style={{
             display: this.state.resultStatus === "none" ? "block" : "none",

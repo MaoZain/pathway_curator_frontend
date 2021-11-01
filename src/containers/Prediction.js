@@ -52,7 +52,7 @@ const BOX_STYLE = {
     "rgb(50 50 93 / 3%) 0px 2px 5px -1px, rgb(0 0 0 / 5%) 0px 1px 3px -1px",
   borderRadius: "6px",
   padding: "2vh",
-  width: "78vw",
+
 };
 
 /**
@@ -180,6 +180,12 @@ export default class Prediction extends Component {
 
   render() {
     // console.log(this.state.list_imageName)
+
+    let upload_image2 = (
+      <div>
+        
+      </div>
+    )
 
     let upload_image = (
       <div style={BOX_STYLE}>
@@ -454,31 +460,19 @@ export default class Prediction extends Component {
     );
 
     return (
-      <div style={{ width: "84vw" }}>
-        <Typography
-          style={{
-            fontWeight: "600",
-            fontSize: "1.5rem",
-            marginTop: "3vw",
-            marginLeft: "4vh",
-          }}
-        >
-          Prediction
-        </Typography>
-        <Divider
-          style={{ marginLeft: "2vw", width: "78vw", marginTop: "4vh" }}
-        ></Divider>
-        <div style={{ width: "78vw", marginLeft: "2vw", marginTop: "3vh" }}>
-          {upload_image}
+      <div>
+       
+        <div >
+          {upload_image2}
         </div>
-        <div style={{ width: "78vw", marginLeft: "2vw", marginTop: "3vh" }}>
+        <div >
           {figure_metadata}
         </div>
-        <div style={{ width: "78vw", marginLeft: "2vw", marginTop: "3vh" }}>
+        <div >
           {paper_metadata}
         </div>
 
-        <Button
+        {/* <Button
           variant="contained"
           onClick={this.fn_prediction}
           style={{
@@ -489,8 +483,9 @@ export default class Prediction extends Component {
           }}
         >
           Predict
-        </Button>
-        <div style={{ height: "10vh" }}></div>
+        </Button> */}
+        {/* <div style={{ height: "10vh" }}></div> */}
+        
       </div>
     );
   }
