@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { alpha, styled } from "@mui/material/styles";
+import { styled } from "@mui/material/styles";
 import Grid from "@mui/material/Grid";
 import styles from "./prediction.module.css";
 import { THEME_CONTENT } from "../../theme/theme";
@@ -43,9 +43,6 @@ export default class Prediction extends Component {
 
     let form = document.getElementById("prediction_form");
     let metadata = new FormData(form);
-    //   data.forEach((value, key)=>{
-    //     console.log(key, value)
-    //   })
     let form_data = new FormData();
     for (let e of metadata) {
         form_data.append(e[0], e[1])
@@ -59,8 +56,6 @@ export default class Prediction extends Component {
     form_data.append("user_name", localStorage.pathway);
     form_data.append("job_name", job_name);
     form_data.append("file_type", this.state.file_uploaded_type);
-    console.log(this.state.file_uploaded_type)
-    console.log(form_data.get("image"))
      //****** create head */
      var myHeaders = new Headers();
      myHeaders.append("Content-Type", "multipart/form-data");

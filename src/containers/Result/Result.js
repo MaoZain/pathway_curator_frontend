@@ -11,7 +11,7 @@ import Accordion from "@mui/material/Accordion";
 import AccordionSummary from "@mui/material/AccordionSummary";
 import AccordionDetails from "@mui/material/AccordionDetails";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import { List, Avatar, Divider, Col, Row } from "antd";
+import { Divider, Col, Row, notification } from "antd";
 
 const { Option } = Select;
 
@@ -107,13 +107,12 @@ export default class Result extends Component {
       visible: open,
     });
   };
-  aaaaa = (name) => {
+  updateOnlineDicName = (name) => {
     let url_dic;
     if (this.state.onlineDictionary === "geneCard") {
       url_dic = "https://www.genecards.org/cgi-bin/carddisp.pl?gene=";
     } else if (this.state.onlineDictionary === "uniProt") {
       url_dic = "https://www.uniprot.org/uniprot/?query=";
-      
     }
     window.open(url_dic + name);
   };
@@ -125,25 +124,48 @@ export default class Result extends Component {
   };
 
   fn_downloadResult = () => {
-    // console.log(this.props.geneInfo);
-    // console.log(this.props.relationInfo)
-    var gene_data =
+    console.log(this.props.geneInfo);
+    console.log(this.props.relationInfo);
+
+    let gene_result = [];
+    for (let e of this.props.geneInfo) {
+      gene_result.push({
+        gene_name: e.gene_name,
+        coordinates: e.gene_BBox,
+      });
+    }
+    let relation_result = [];
+    for (let e of this.props.relationInfo) {
+        relation_result.push({
+          activator: e.activator,
+          category: e.relation_type,
+          receptor: e.receptor,
+          coordinates: e.relation_Bbox,
+        })
+    }
+    let result = {
+      file_name: this.props.figureInfo[0].fig_name,
+      element: gene_result,
+      relation: relation_result,
+    };
+    let result_json =
       "data:text/json;charset=utf-8," +
-      encodeURIComponent(JSON.stringify(this.props.geneInfo));
-    var downloadGeneNode = document.createElement("a");
-    downloadGeneNode.setAttribute("href", gene_data);
-    downloadGeneNode.setAttribute("download", "gene_info.json");
+      encodeURIComponent(JSON.stringify(result));
+    let downloadGeneNode = document.createElement("a");
+    downloadGeneNode.setAttribute("href", result_json);
+    downloadGeneNode.setAttribute(
+      "download",
+      this.props.figureInfo[0].fig_name + "_result.json"
+    );
     downloadGeneNode.click();
     downloadGeneNode.remove();
+  };
 
-    var relation_data =
-      "data:text/json;charset=utf-8," +
-      encodeURIComponent(JSON.stringify(this.props.relationInfo));
-    var downloadRelationNode = document.createElement("a");
-    downloadRelationNode.setAttribute("href", relation_data);
-    downloadRelationNode.setAttribute("download", "relation_info.json");
-    downloadRelationNode.click();
-    downloadRelationNode.remove();
+  openNotification = (type, message, description) => {
+    notification[type]({
+      message: message,
+      description: description,
+    });
   };
 
   render() {
@@ -265,16 +287,16 @@ export default class Result extends Component {
         </Row>
       </div>
     );
+    console.log(this.props.figureInfo);
 
     return (
       <React.Fragment>
-        
         <Button type="primary" onClick={this.showDrawer(true)}>
-          Show Detail
+          Show Metadata
         </Button>
         <Select
           placeholder="Dictionary"
-          style={{ width: 120, marginLeft:'20px' }}
+          style={{ width: 120, marginLeft: "20px" }}
           onChange={this.fn_selectDictionary}
         >
           <Option value="geneCard">geneCard</Option>
@@ -367,7 +389,7 @@ export default class Result extends Component {
               <img
                 id="figure"
                 alt=""
-                src={Img}
+                src={this.props.base64_figure}
                 style={{ height: "100%" }}
               ></img>
               {
@@ -396,7 +418,7 @@ export default class Result extends Component {
                     <span
                       id={index}
                       style={geneBbox}
-                      onClick={() => this.aaaaa(value.gene_name)}
+                      onClick={() => this.updateOnlineDicName(value.gene_name)}
                       href={"https://www.google.com/"}
                       target="view_window"
                     ></span>
@@ -429,16 +451,39 @@ export default class Result extends Component {
             </div>
           </Grid>
         </Grid>
-        <br/>
-        <Button type="primary" >
+        <br />
+        <Button
+          type="primary"
+          onClick={() =>
+            this.openNotification(
+              "warning",
+              "Developing",
+              "It will be finished in the next version"
+            )
+          }
+        >
           Add a gene
         </Button>
 
-        <Button type="primary" style={{ marginLeft:'20px' }}>
+        <Button
+          type="primary"
+          style={{ marginLeft: "20px" }}
+          onClick={() =>
+            this.openNotification(
+              "warning",
+              "Developing",
+              "It will be finished in the next version"
+            )
+          }
+        >
           Add a relation
         </Button>
 
-        <Button type="primary" style={{ marginLeft:'20px' }} onClick={this.fn_downloadResult}>
+        <Button
+          type="primary"
+          style={{ marginLeft: "20px" }}
+          onClick={this.fn_downloadResult}
+        >
           Download
         </Button>
       </React.Fragment>
