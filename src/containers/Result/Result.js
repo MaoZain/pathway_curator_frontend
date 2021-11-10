@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import Grid from "@mui/material/Grid";
-import Img from "./testimg.png";
 import styles from "./result.module.css";
 import { DataGrid } from "@mui/x-data-grid";
 import "antd/dist/antd.css";
@@ -11,7 +10,9 @@ import Accordion from "@mui/material/Accordion";
 import AccordionSummary from "@mui/material/AccordionSummary";
 import AccordionDetails from "@mui/material/AccordionDetails";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import { Divider, Col, Row, notification } from "antd";
+import { Divider, Col, Row } from "antd";
+import set_notification from "../../components/notification/notification";
+
 
 const { Option } = Select;
 
@@ -92,7 +93,7 @@ export default class Result extends Component {
   }
 
   handleEditRowsModelChange = (id, field, value) => {
-    console.log(id);
+    console.log(id);  
   };
   handlePanelChange = (panel) => {
     console.log(panel);
@@ -136,12 +137,12 @@ export default class Result extends Component {
     }
     let relation_result = [];
     for (let e of this.props.relationInfo) {
-        relation_result.push({
-          activator: e.activator,
-          category: e.relation_type,
-          receptor: e.receptor,
-          coordinates: e.relation_Bbox,
-        })
+      relation_result.push({
+        activator: e.activator,
+        category: e.relation_type,
+        receptor: e.receptor,
+        coordinates: e.relation_Bbox,
+      });
     }
     let result = {
       file_name: this.props.figureInfo[0].fig_name,
@@ -159,13 +160,6 @@ export default class Result extends Component {
     );
     downloadGeneNode.click();
     downloadGeneNode.remove();
-  };
-
-  openNotification = (type, message, description) => {
-    notification[type]({
-      message: message,
-      description: description,
-    });
   };
 
   render() {
@@ -287,7 +281,6 @@ export default class Result extends Component {
         </Row>
       </div>
     );
-    console.log(this.props.figureInfo);
 
     return (
       <React.Fragment>
@@ -455,7 +448,7 @@ export default class Result extends Component {
         <Button
           type="primary"
           onClick={() =>
-            this.openNotification(
+            set_notification(
               "warning",
               "Developing",
               "It will be finished in the next version"
@@ -469,7 +462,7 @@ export default class Result extends Component {
           type="primary"
           style={{ marginLeft: "20px" }}
           onClick={() =>
-            this.openNotification(
+            set_notification(
               "warning",
               "Developing",
               "It will be finished in the next version"

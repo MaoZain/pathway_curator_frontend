@@ -6,12 +6,17 @@ import { THEME_CONTENT } from "../../theme/theme";
 import TextField from "@mui/material/TextField";
 import DropZone from "react-dropzone";
 import upload_img from "./upload.png";
-import zip_rar_logo from "./zip_rar_logo.jpg"
-// import Button from '@mui/material/Button';
-import { Button, notification } from 'antd';
+import zip_rar_logo from "./zip_rar_logo.jpg";
+import { Button } from "antd";
+import set_notification from "../../components/notification/notification";
 
-
-
+/**
+ * @description
+ * @author MaoZane
+ * @export
+ * @class Prediction
+ * @extends {Component}
+ */
 export default class Prediction extends Component {
   constructor(props) {
     super(props);
@@ -21,33 +26,30 @@ export default class Prediction extends Component {
       a: 111,
       uploadType: "image",
       file_uploaded: false,
-      file_uploaded_type:'',
-      file_name:'',
-      file_size:'',
-      file:null,
-
+      file_uploaded_type: "",
+      file_name: "",
+      file_size: "",
+      file: null,
     };
   }
-  openNotification = (type, message, description) => {
-    notification[type]({
-      message: message,
-      description:description,
-    });
-  };
   submit = () => {
-    if(this.state.file_uploaded_type === "image"){
+    if (this.state.file_uploaded_type === "image") {
       this.props.changePredictionStatus("start");
-    }else{
-      this.openNotification('success','Submitted successfully','Please jump to History page to get the result!')
+    } else {
+      set_notification(
+        "success",
+        "Submitted successfully",
+        "Please jump to History page to get the result!"
+      );
     }
 
     let form = document.getElementById("prediction_form");
     let metadata = new FormData(form);
     let form_data = new FormData();
     for (let e of metadata) {
-        form_data.append(e[0], e[1])
+      form_data.append(e[0], e[1]);
     }
-    form_data.append("image", this.state.file)
+    form_data.append("image", this.state.file);
     let date = new Date().toLocaleDateString();
     let time = new Date().toLocaleTimeString();
     let job_name = date + "_" + time;
@@ -56,55 +58,55 @@ export default class Prediction extends Component {
     form_data.append("user_name", localStorage.pathway);
     form_data.append("job_name", job_name);
     form_data.append("file_type", this.state.file_uploaded_type);
-     //****** create head */
-     var myHeaders = new Headers();
-     myHeaders.append("Content-Type", "multipart/form-data");
-     var requestOptions = {
-       method: "POST",
-       body: form_data,
-     };
-     // // ****** fetch post /predict */
-     fetch(process.env.REACT_APP_API + "/predict", requestOptions)
-       .then((response) => response.json())
-       .then((result) => {
-         if(result.error){
-          console.log(result)
-         }else{
+    //****** create head */
+    var myHeaders = new Headers();
+    myHeaders.append("Content-Type", "multipart/form-data");
+    var requestOptions = {
+      method: "POST",
+      body: form_data,
+    };
+    // // ****** fetch post /predict */
+    fetch(process.env.REACT_APP_API + "/predict", requestOptions)
+      .then((response) => response.json())
+      .then((result) => {
+        if (result.error) {
+          console.log(result);
+        } else {
           //****** success */
           this.props.fn_showResult(result);
-         }
-       })
-       .catch((error) => console.log("error", error));
+        }
+      })
+      .catch((error) => console.log("error", error));
   };
   onDrop = (file) => {
     console.log(file);
     this.setState({
       file_uploaded: true,
-      upload_file:file[0],
-      file:file[0],
-      file_name:file[0].name,
-      file_size:(file[0].size / 1048576).toFixed(2)
+      upload_file: file[0],
+      file: file[0],
+      file_name: file[0].name,
+      file_size: (file[0].size / 1048576).toFixed(2),
     });
-    if(file[0].type.includes("image")){
-        let image = file[0];
-        let url = window.URL.createObjectURL(image);
-        document.getElementById("upload_image").src = url;
-        this.setState({
-          file_uploaded_type:"image"
-        })
-    }else{
-        // let url = window.URL.createObjectURL(zip_rar_logo);
-        document.getElementById("upload_image").src = zip_rar_logo;
-        this.setState({
-          file_uploaded_type:"zip"
-        })
+    if (file[0].type.includes("image")) {
+      let image = file[0];
+      let url = window.URL.createObjectURL(image);
+      document.getElementById("upload_image").src = url;
+      this.setState({
+        file_uploaded_type: "image",
+      });
+    } else {
+      // let url = window.URL.createObjectURL(zip_rar_logo);
+      document.getElementById("upload_image").src = zip_rar_logo;
+      this.setState({
+        file_uploaded_type: "zip",
+      });
     }
-  }
+  };
   reset_figure_info = () => {
     this.setState({
-        file_uploaded: false,
-      });
-  }
+      file_uploaded: false,
+    });
+  };
   render() {
     //style of the form input
     const MyTextField = styled(TextField)({
@@ -134,7 +136,6 @@ export default class Prediction extends Component {
     return (
       <React.Fragment>
         <form id="prediction_form">
-            
           <div
             className={styles.container_input}
             style={{
@@ -159,7 +160,11 @@ export default class Prediction extends Component {
                 {({ getRootProps, getInputProps }) => (
                   <div {...getRootProps()} className={styles.file_on}>
                     <input {...getInputProps()} />
-                    <img src={upload_img} alt="asd" style={{ height: "15vw" }} />
+                    <img
+                      src={upload_img}
+                      alt="asd"
+                      style={{ height: "15vw" }}
+                    />
                     <p>
                       Drag 'n' drop some files here, or click to select files
                     </p>
@@ -179,10 +184,19 @@ export default class Prediction extends Component {
               <img
                 id="upload_image"
                 alt="uploaded"
-                style={{ height: "15vw", marginBottom:'10px' }}
+                style={{ height: "15vw", marginBottom: "10px" }}
               ></img>
-              <p>file:"{this.state.file_name}" has been uploaded! Size:{this.state.file_size}MB </p>
-              <Button variant="outlined" size="small" onClick={this.reset_figure_info}>Reset</Button>
+              <p>
+                file:"{this.state.file_name}" has been uploaded! Size:
+                {this.state.file_size}MB{" "}
+              </p>
+              <Button
+                variant="outlined"
+                size="small"
+                onClick={this.reset_figure_info}
+              >
+                Reset
+              </Button>
             </div>
           </div>
 
@@ -281,7 +295,7 @@ export default class Prediction extends Component {
                   id="outlined-basic"
                   label="Publication year"
                   variant="outlined"
-                  type="number" 
+                  type="number"
                   fullWidth
                 />
               </Grid>
@@ -315,13 +329,15 @@ export default class Prediction extends Component {
                 />
               </Grid>
             </Grid>
-     <br/>
-          <Button type="reset" variant="outlined" size="small">Reset</Button>
+            <br />
+            <Button type="reset" variant="outlined" size="small">
+              Reset
+            </Button>
           </div>
-         
-           
         </form>
-        <Button onClick={this.submit} variant="contained" type="primary">submit</Button>
+        <Button onClick={this.submit} variant="contained" type="primary">
+          submit
+        </Button>
       </React.Fragment>
     );
   }
