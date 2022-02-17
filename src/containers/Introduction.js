@@ -1,6 +1,6 @@
 import { Typography, Divider } from "@material-ui/core";
 import React, { Component } from "react";
-import IntroductionToG2PDeep from "../components/IntroductionToPathway/IntroductionToPathway";
+import IntroductionToPathway from "../components/IntroductionToPathway/IntroductionToPathway";
 
 
 /**
@@ -14,7 +14,7 @@ export default class Introduction extends Component {
   render() {
     return (
       <div>
-        <IntroductionToG2PDeep />
+        <IntroductionToPathway />
       </div>
     );
   }

@@ -1,11 +1,14 @@
 import React, { Component } from "react";
-import { Typography } from "antd";
 import { Steps } from "antd";
-import { Row, Col } from "antd";
+import Box from "@mui/material/Box";
+import Card from "@mui/material/Card";
+import CardActions from "@mui/material/CardActions";
+import CardContent from "@mui/material/CardContent";
+import Button from "@mui/material/Button";
+import Typography from "@mui/material/Typography";
+import Grid from "@mui/material/Grid";
 import step_img from "./step.png";
-
-const { Step } = Steps;
-const { Title } = Typography;
+import { Chart } from "@antv/g2";
 
 export default class InputData extends Component {
   constructor(props) {
@@ -14,6 +17,70 @@ export default class InputData extends Component {
       current_step: 0,
     };
   }
+
+  componentDidMount = () => {
+    const data = [
+      { name: "User", month: "Mar.2021", numbers: 0 },
+      { name: "User", month: "Apr.2021", numbers: 0 },
+      { name: "User", month: "May.2021", numbers: 0 },
+      { name: "User", month: "Jun.2021", numbers: 0 },
+      { name: "User", month: "Jul.2021", numbers: 0 },
+      { name: "User", month: "Aug.2021", numbers: 1 },
+      { name: "User", month: "Sept.2021", numbers: 1 },
+      { name: "User", month: "Oct.2021", numbers: 1 },
+      { name: "User", month: "Nov.2021", numbers: 0 },
+      { name: "User", month: "Dec.2021", numbers: 5 },
+      { name: "User", month: "Jan.2022", numbers: 0 },
+      { name: "User", month: "Feb.2022", numbers: 0 },
+
+      { name: "Figure", month: "Mar.2021", numbers: 0 },
+      { name: "Figure", month: "Apr.2021", numbers: 0 },
+      { name: "Figure", month: "May.2021", numbers: 0 },
+      { name: "Figure", month: "Jun.2021", numbers: 0 },
+      { name: "Figure", month: "Jul.2021", numbers: 0 },
+      { name: "Figure", month: "Aug.2021", numbers: 0 },
+      { name: "Figure", month: "Sept.2021", numbers: 0 },
+      { name: "Figure", month: "Oct.2021", numbers: 0 },
+      { name: "Figure", month: "Nov.2021", numbers: 17 },
+      { name: "Figure", month: "Dec.2021", numbers: 20 },
+      { name: "Figure", month: "Jan.2022", numbers: 11 },
+      { name: "Figure", month: "Feb.2022", numbers: 5 },
+    ];
+
+    const chart = new Chart({
+      container: "container",
+      autoFit: true,
+      height: 160,
+      padding: [20, 20, 60, 20],
+    });
+
+    chart.data(data);
+    chart.scale("numbers", {
+      nice: true,
+    });
+
+    chart.axis("numbers", false);
+
+    chart.tooltip({
+      showMarkers: false,
+      shared: true,
+    });
+
+    chart
+      .interval()
+      .position("month*numbers")
+      .color("name")
+      .adjust([
+        {
+          type: "dodge",
+          marginRatio: 0,
+        },
+      ]);
+
+    chart.interaction("active-region");
+
+    chart.render();
+  };
 
   // onChange = current => {
   //   console.log('onChange:', current);
@@ -27,57 +94,94 @@ export default class InputData extends Component {
   };
 
   render() {
-    const { current_step } = this.state;
-    let step_comp = (
-      <div>
-        <Steps current={current_step} onChange={this.onChangeSteps}>
-          <Step
-            color="white"
-            title="Input Pathway"
-            // description="Workflow of G2PDeep."
-          />
-          <Step
-            title="Gene Detection"
-            // description="Upload and create dataset of SNP."
-          />
-          <Step
-            title="Relation Detection"
-            // description="Build, train, analysis state-of-the-art deep learning models."
-          />
-          <Step
-            title="Result Filtering & Forming"
-            // description="Predict quantitative phenotype trait and detect genotype markers."
-          />
-        </Steps>
-      </div>
-    );
-
     return (
-      <div>
-        <Title style={{ marginLeft: "4vh", marginTop: "2vh" }} level={4}>
-          How Pathway Curator works?
-        </Title>
-        <div
-          style={{ marginLeft: "4vh", marginTop: "2vh", textAlign: "center" }}
-        >
-          <br></br>
-          <div style={{ width: "70vw" }}>
-            <Row>
-              <Col>
-                {/* {step_comp} */}
-                {/* {step_content} */}
-        
+      <React.Fragment>
+        <Grid container spacing={2} style={{ marginTop: "10px" }}>
+          <Grid item sm={2}>
+            <Grid item sm={12}>
+              <Card
+                style={{
+                  backgroundColor: "rgb(47,101,203, 0.15)",
+                  height: "100px",
+                }}
+                variant="none"
+              >
+                <CardContent>
+                  <Typography
+                    component="div"
+                    style={{ fontWeight: "500", fontSize: "1rem" }}
+                  >
+                    Total # of Figures
+                  </Typography>
+                  <Typography
+                    style={{
+                      marginTop: "15px",
+                      fontWeight: "400",
+                      fontSize: "1.5rem",
+                    }}
+                  >
+                    53
+                  </Typography>
+                </CardContent>
+              </Card>
+            </Grid>
+            <Grid item sm={12} style={{ marginTop: "10px" }}>
+              <Card
+                style={{
+                  backgroundColor: "rgb(47,101,203, 0.15)",
+                  height: "100px",
+                }}
+                variant="none"
+              >
+                <CardContent>
+                  <Typography
+                    component="div"
+                    style={{ fontWeight: "500", fontSize: "1rem" }}
+                  >
+                    Total # of Visitors
+                  </Typography>
+                  <Typography
+                    style={{
+                      marginTop: "15px",
+                      fontWeight: "400",
+                      fontSize: "1.5rem",
+                    }}
+                  >
+                    8
+                  </Typography>
+                </CardContent>
+              </Card>
+            </Grid>
+          </Grid>
 
-                <img
-                  alt="Introduction"
-                  src={step_img}
-                  style={{ width: "90%" }}
-                ></img>
-              </Col>
-            </Row>
-          </div>
-        </div>
-      </div>
+          <Grid item sm={10}>
+            <Card style={{ height: "210px", backgroundColor: "rgb(47,101,203, 0.08)" }} variant="none">
+              <CardContent>
+                <Typography
+                  component="div"
+                  style={{ fontWeight: "500", fontSize: "1rem" }}
+                >
+                  # of New Users and Figures / per month
+                </Typography>
+              </CardContent>
+              <div id="container"></div>
+            </Card>
+          </Grid>
+        </Grid>
+        <Grid container>
+          <Typography
+            style={{ marginTop: "40px", fontSize: "1.3rem", fontWeight: "500" }}
+          >
+            How Pathway Curator Works?
+          </Typography>
+        </Grid>
+        <br></br>
+        <br></br>
+        <br></br>
+        <Grid container>
+          <img alt="Introduction" src={step_img} style={{ width: "60%" }}></img>
+        </Grid>
+      </React.Fragment>
     );
   }
 }

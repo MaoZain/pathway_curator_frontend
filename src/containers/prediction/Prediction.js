@@ -80,27 +80,36 @@ export default class Prediction extends Component {
   };
   onDrop = (file) => {
     console.log(file);
-    this.setState({
-      file_uploaded: true,
-      upload_file: file[0],
-      file: file[0],
-      file_name: file[0].name,
-      file_size: (file[0].size / 1048576).toFixed(2),
-    });
-    if (file[0].type.includes("image")) {
-      let image = file[0];
-      let url = window.URL.createObjectURL(image);
-      document.getElementById("upload_image").src = url;
+    if((file[0].size / 1048576).toFixed(2)<15){
       this.setState({
-        file_uploaded_type: "image",
+        file_uploaded: true,
+        upload_file: file[0],
+        file: file[0],
+        file_name: file[0].name,
+        file_size: (file[0].size / 1048576).toFixed(2),
       });
-    } else {
-      // let url = window.URL.createObjectURL(zip_rar_logo);
-      document.getElementById("upload_image").src = zip_rar_logo;
-      this.setState({
-        file_uploaded_type: "zip",
-      });
+      if (file[0].type.includes("image")) {
+        let image = file[0];
+        let url = window.URL.createObjectURL(image);
+        document.getElementById("upload_image").src = url;
+        this.setState({
+          file_uploaded_type: "image",
+        });
+      } else {
+        // let url = window.URL.createObjectURL(zip_rar_logo);
+        document.getElementById("upload_image").src = zip_rar_logo;
+        this.setState({
+          file_uploaded_type: "zip",
+        });
+      }
+    }else{
+      set_notification(
+        "error",
+        "upload failed",
+        "file's size must less than 15MB!"
+      );
     }
+    
   };
   reset_figure_info = () => {
     this.setState({
@@ -217,6 +226,7 @@ export default class Prediction extends Component {
                   label="Figure Title"
                   variant="outlined"
                   fullWidth
+                  inputProps={{ maxLength: 90 }}
                 />
               </Grid>
               <Grid item sm={6}>
@@ -226,6 +236,7 @@ export default class Prediction extends Component {
                   label="Resource Link"
                   variant="outlined"
                   fullWidth
+                  inputProps={{ maxLength: 50 }}
                 />
               </Grid>
               <Grid item sm={12}>
@@ -236,6 +247,7 @@ export default class Prediction extends Component {
                   variant="outlined"
                   fullWidth
                   multiline
+                  inputProps={{ maxLength: 100 }}
                   minRows={2}
                 />
               </Grid>
@@ -250,6 +262,7 @@ export default class Prediction extends Component {
                   label="Paper Title"
                   variant="outlined"
                   fullWidth
+                  inputProps={{ maxLength: 50 }}
                 />
               </Grid>
               <Grid item sm={6} md={3}>
@@ -259,6 +272,7 @@ export default class Prediction extends Component {
                   label="Resource Link"
                   variant="outlined"
                   fullWidth
+                  inputProps={{ maxLength: 50 }}
                 />
               </Grid>
               <Grid item sm={6} md={3}>
@@ -268,6 +282,7 @@ export default class Prediction extends Component {
                   label="PMC ID"
                   variant="outlined"
                   fullWidth
+                  inputProps={{ maxLength: 50 }}
                 />
               </Grid>
               <Grid item sm={6} md={3}>
@@ -277,6 +292,7 @@ export default class Prediction extends Component {
                   label="PM ID"
                   variant="outlined"
                   fullWidth
+                  inputProps={{ maxLength: 50 }}
                 />
               </Grid>
               <Grid item sm={6} md={3}>
@@ -286,6 +302,7 @@ export default class Prediction extends Component {
                   label="First Author"
                   variant="outlined"
                   fullWidth
+                  inputProps={{ maxLength: 50 }}
                 />
               </Grid>
               <Grid item sm={6} md={3}>
@@ -306,6 +323,7 @@ export default class Prediction extends Component {
                   label="Journal"
                   variant="outlined"
                   fullWidth
+                  inputProps={{ maxLength: 90 }}
                 />
               </Grid>
               <Grid item sm={6} md={3}>
@@ -315,6 +333,7 @@ export default class Prediction extends Component {
                   label="Keywords"
                   variant="outlined"
                   fullWidth
+                  inputProps={{ maxLength: 50 }}
                 />
               </Grid>
               <Grid item sm={12}>
@@ -326,6 +345,7 @@ export default class Prediction extends Component {
                   fullWidth
                   multiline
                   minRows={2}
+                  inputProps={{ maxLength: 100 }}
                 />
               </Grid>
             </Grid>

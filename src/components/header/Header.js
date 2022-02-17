@@ -26,6 +26,10 @@ export default function Logo(props) {
   const change_theme = (theme) => {
     props.change_theme(theme)
   }
+  const github = () => {
+    console.log("github1")
+    
+  }
   return (
     <div
       className={styles.header_container}
@@ -43,11 +47,7 @@ export default function Logo(props) {
         style={{ display: props.theme === "dark" ? "block" : "none" }}
       />
       <AccountCircleIcon className={styles.icon_user}></AccountCircleIcon>
-      <GitHubIcon className={styles.icon_github}></GitHubIcon>
-      {/* <MenuSharpIcon
-        className={styles.icon_mini_menu}
-        style={{ display: props.innerWidth < 1200 ? "block" : "none" }}
-      /> */}
+      <GitHubIcon className={styles.icon_github} onClick={()=>github()}></GitHubIcon>
 
       <IconButton
         className={styles.icon_mini_menu}

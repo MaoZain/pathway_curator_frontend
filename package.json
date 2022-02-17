@@ -4,6 +4,7 @@
   "private": true,
   "homepage": "./",
   "dependencies": {
+    "@antv/g2": "^4.1.45",
     "@antv/x6": "^1.19.0",
     "@emotion/react": "latest",
     "@emotion/styled": "latest",
@@ -16,6 +17,7 @@
     "@testing-library/react": "^11.2.6",
     "@testing-library/user-event": "^12.8.3",
     "antd": "^4.15.1",
+    "highcharts": "^9.3.3",
     "http-proxy-middleware": "^1.1.1",
     "jsplumb": "^2.15.5",
     "jsplumb-react": "0.0.27",

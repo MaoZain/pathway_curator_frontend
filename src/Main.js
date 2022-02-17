@@ -4,6 +4,7 @@ import Prediction from "./containers/prediction/Prediction";
 import History from "./containers/History";
 import Result from "./containers/Result/Result";
 import Edit from "./containers/Edit";
+import Datasets from "./containers/Datasets/Datasets"
 import Logo from "./components/logo/Logo";
 import Header from "./components/header/Header";
 import Navbar from "./components/navbar/Navbar";
@@ -95,17 +96,38 @@ export default class Main extends PureComponent {
     });
   };
 
-  componentDidMount = () => {
-    // this.setUserId();
+  searchUserID = () => {
     if (!localStorage.getItem("pathway")) {
       this.setUserId();
+    }else{
+      this.verifyUserID(localStorage.getItem("pathway"));
     }
-    // console.log(localStorage)
+  }
+
+  verifyUserID = (id) => {
+    let form_data = new FormData();
+    form_data.append("user_id", localStorage.pathway);
+    let requestOptions = {
+      method: "POST",
+      body: form_data,
+    };
+    // // ****** fetch post /predict */
+    fetch(process.env.REACT_APP_API + "/verify_user_id", requestOptions)
+      .then((response) => response.json())
+      .then((result) => {
+        if (result.error) {
+          console.log(result);
+        } else {
+          //****** success */
+          console.log(result)
+        }
+      })
+      .catch((error) => console.log("error", error));
+  }
+
+  componentDidMount = () => {
+    this.searchUserID()
     window.addEventListener("resize", () => {
-      // console.log(
-      //   "height",
-      //   document.getElementById("content_container").scrollHeight
-      // );
       this.setState({
         innerWidth: window.innerWidth,
         innerHeight: window.innerHeight,
@@ -168,6 +190,27 @@ export default class Main extends PureComponent {
     });
   };
 
+  fetch_editGeneInfo = (row) => {
+    return new Promise((resolve, reject) => {
+      let formData = new FormData();
+      formData.append("gene_id", this.state.geneInfo[row.id-1].gene_id);
+      formData.append("gene_name", row.value);
+  
+      var requestOptions = {
+        method: "PUT",
+        body: formData,
+      };
+  
+      fetch(process.env.REACT_APP_API + "/edit_geneInfo", requestOptions)
+        .then((response) => response.text())
+        .then((result) => {
+          // console.log(result);
+          this.fetch_AllHistory();
+        })
+        .catch((error) => console.log("error", error));
+    })
+  };
+
   fn_changePredictionStatus = (status) => {
     this.setState({
       resultStatus: status,
@@ -188,6 +231,11 @@ export default class Main extends PureComponent {
       current_page: id,
     });
   };
+
+  handleEditGeneInfo = (row) => {
+    console.log(row);
+    this.fetch_editGeneInfo(row);
+  }
 
   render() {
     // console.log(this.state.innerWidth);
@@ -318,6 +366,7 @@ export default class Main extends PureComponent {
               figureInfo={this.state.figureInfo}
               resultStatus={this.state.resultStatus}
               fn_changePage={this.fn_changePage}
+              handleEditGeneInfo={this.handleEditGeneInfo}
             />
           </div>
         );
@@ -359,12 +408,13 @@ export default class Main extends PureComponent {
           </React.Fragment>
         );
       }
-    } else if (this.state.current_page === "edit") {
+    }else if(this.state.current_page === "Paper & Datasets"){
       content = (
         <div>
-          <Edit />
+          <Datasets
+          />
         </div>
-      );
+      )
     }
     return (
       // <div>

@@ -6,8 +6,9 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import ListSubheader from '@mui/material/ListSubheader';
 import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
 import BuildOutlinedIcon from '@mui/icons-material/BuildOutlined';
-import StorageRoundedIcon from '@mui/icons-material/StorageRounded';
+import HistoryOutlinedIcon from '@mui/icons-material/HistoryOutlined';
 import AssessmentOutlinedIcon from '@mui/icons-material/AssessmentOutlined';
+import CloudDownloadOutlinedIcon from '@mui/icons-material/CloudDownloadOutlined';
 
 
 export default function Navbar(props) {
@@ -39,7 +40,7 @@ export default function Navbar(props) {
 
       <ListItemButton id ='History'>
         <ListItemIcon className={styles.item_icon} style={{color:props.icon_color}}>
-          <StorageRoundedIcon id ='History'></StorageRoundedIcon>
+          <HistoryOutlinedIcon id ='History'></HistoryOutlinedIcon>
         </ListItemIcon>
         <p className={styles.nav_p} id ='History' >History</p>
       </ListItemButton>
@@ -49,6 +50,13 @@ export default function Navbar(props) {
           <AssessmentOutlinedIcon id ='Result'></AssessmentOutlinedIcon>
         </ListItemIcon>
         <p className={styles.nav_p} id ='Result' >Result</p>
+      </ListItemButton>
+
+      <ListItemButton id ='Paper & Datasets'>
+        <ListItemIcon className={styles.item_icon} style={{color:props.icon_color}}>
+          <CloudDownloadOutlinedIcon id ='Paper & Datasets'></CloudDownloadOutlinedIcon>
+        </ListItemIcon>
+        <p className={styles.nav_p} id ='Paper & Datasets' >Paper & Datasets</p>
       </ListItemButton>
 
     </List>

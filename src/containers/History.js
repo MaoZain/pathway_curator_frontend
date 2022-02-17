@@ -50,7 +50,7 @@ export default class History extends Component {
 
   componentDidMount = () => {
     this.fetch_AllHistory();
-    fetch_history_timer = setInterval(()=>this.fetch_AllHistory(),3000)
+    fetch_history_timer = setInterval(()=>this.fetch_AllHistory(),10000)
   };
 
 

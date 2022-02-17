@@ -6,13 +6,8 @@ import "antd/dist/antd.css";
 import { Button, Select } from "antd";
 import Drawer from "@mui/material/Drawer";
 import { THEME_CONTENT } from "../../theme/theme";
-import Accordion from "@mui/material/Accordion";
-import AccordionSummary from "@mui/material/AccordionSummary";
-import AccordionDetails from "@mui/material/AccordionDetails";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { Divider, Col, Row } from "antd";
 import set_notification from "../../components/notification/notification";
-
 
 const { Option } = Select;
 
@@ -92,8 +87,9 @@ export default class Result extends Component {
     });
   }
 
-  handleEditRowsModelChange = (id, field, value) => {
-    console.log(id);  
+  handleEditGeneInfo = (row) => {
+    // console.log(row);
+    this.props.handleEditGeneInfo(row);
   };
   handlePanelChange = (panel) => {
     console.log(panel);
@@ -170,6 +166,7 @@ export default class Result extends Component {
       rows_element.push({
         name: element.gene_name,
         id: index + 1,
+        gene_id:element.gene_id,
       });
     });
     this.props.relationInfo.forEach((element, index) => {
@@ -287,6 +284,41 @@ export default class Result extends Component {
         <Button type="primary" onClick={this.showDrawer(true)}>
           Show Metadata
         </Button>
+        <Button
+          style={{ marginLeft: "10px" }}
+          type="primary"
+          onClick={() =>
+            set_notification(
+              "warning",
+              "Developing",
+              "It will be finished in the next version"
+            )
+          }
+        >
+          Add a gene
+        </Button>
+
+        <Button
+          type="primary"
+          style={{ marginLeft: "10px" }}
+          onClick={() =>
+            set_notification(
+              "warning",
+              "Developing",
+              "It will be finished in the next version"
+            )
+          }
+        >
+          Add a relation
+        </Button>
+
+        <Button
+          type="primary"
+          style={{ marginLeft: "10px" }}
+          onClick={this.fn_downloadResult}
+        >
+          Download Result
+        </Button>
         <Select
           placeholder="Dictionary"
           style={{ width: 120, marginLeft: "20px" }}
@@ -303,81 +335,7 @@ export default class Result extends Component {
           {detail}
         </Drawer>
         <Grid container spacing={2} style={{ marginTop: "10px" }}>
-          <Grid item sm={12} lg={5}>
-            <Accordion
-              expanded={this.state.expanded === "panel1"}
-              onChange={() => this.handlePanelChange("panel1")}
-            >
-              <AccordionSummary
-                expandIcon={<ExpandMoreIcon />}
-                aria-controls="panel1a-content"
-                id="panel1a-header"
-                style={{
-                  backgroundColor:
-                    THEME_CONTENT[this.props.theme].background_color_content,
-                  color: THEME_CONTENT[this.props.theme].color,
-                }}
-              >
-                <p>Gene Info</p>
-              </AccordionSummary>
-              <AccordionDetails
-                style={{
-                  backgroundColor:
-                    THEME_CONTENT[this.props.theme].background_color_content,
-                }}
-              >
-                <div style={{ height: "55vh" }}>
-                  <DataGrid
-                    style={{ color: THEME_CONTENT[this.props.theme].color }}
-                    rows={rows_element}
-                    columns={columns_elements}
-                    pageSize={7}
-                    rowsPerPageOptions={[7]}
-                    // checkboxSelection
-                    // disableSelectionOnClick
-                    onCellEditCommit={this.handleEditRowsModelChange}
-                  />
-                </div>
-              </AccordionDetails>
-            </Accordion>
-            <Accordion
-              expanded={this.state.expanded === "panel2"}
-              onChange={() => this.handlePanelChange("panel2")}
-            >
-              <AccordionSummary
-                expandIcon={<ExpandMoreIcon />}
-                aria-controls="panel1a-content"
-                id="panel1a-header"
-                style={{
-                  backgroundColor:
-                    THEME_CONTENT[this.props.theme].background_color_content,
-                  color: THEME_CONTENT[this.props.theme].color,
-                }}
-              >
-                <p>Relation Info</p>
-              </AccordionSummary>
-              <AccordionDetails
-                style={{
-                  backgroundColor:
-                    THEME_CONTENT[this.props.theme].background_color_content,
-                }}
-              >
-                <div style={{ height: "55vh" }}>
-                  <DataGrid
-                    style={{ color: THEME_CONTENT[this.props.theme].color }}
-                    rows={rows_relations}
-                    columns={columns_relations}
-                    pageSize={7}
-                    rowsPerPageOptions={[7]}
-                    // checkboxSelection
-                    // disableSelectionOnClick
-                    onCellEditCommit={this.handleEditRowsModelChange}
-                  />
-                </div>
-              </AccordionDetails>
-            </Accordion>
-          </Grid>
-          <Grid item sm={12} lg={7}>
+          <Grid item sm={12}>
             <div id="paper_figure" className={styles.container_figure}>
               <img
                 id="figure"
@@ -422,8 +380,6 @@ export default class Result extends Component {
               {
                 //relation bbox
                 this.props.relationInfo.map((value, index) => {
-                  // console.log(value)
-
                   let scale_of_bbox =
                     this.state.figure_width / this.props.figureInfo[0].height;
                   let relationBbox = {
@@ -443,42 +399,36 @@ export default class Result extends Component {
               }
             </div>
           </Grid>
+          <Grid item sm={12} lg={3}>
+            <div style={{ height: "55vh" }}>
+              <DataGrid
+                style={{ color: THEME_CONTENT[this.props.theme].color }}
+                rows={rows_element}
+                columns={columns_elements}
+                pageSize={7}
+                rowsPerPageOptions={[7]}
+                // checkboxSelection
+                // disableSelectionOnClick
+                onCellEditCommit={this.handleEditGeneInfo}
+              />
+            </div>
+          </Grid>
+          <Grid item sm={12} lg={6}>
+            <div style={{ height: "55vh" }}>
+              <DataGrid
+                style={{ color: THEME_CONTENT[this.props.theme].color }}
+                rows={rows_relations}
+                columns={columns_relations}
+                pageSize={7}
+                rowsPerPageOptions={[7]}
+                // checkboxSelection
+                // disableSelectionOnClick
+                onCellEditCommit={this.handleEditRowsModelChange}
+              />
+            </div>
+          </Grid>
         </Grid>
         <br />
-        <Button
-          type="primary"
-          onClick={() =>
-            set_notification(
-              "warning",
-              "Developing",
-              "It will be finished in the next version"
-            )
-          }
-        >
-          Add a gene
-        </Button>
-
-        <Button
-          type="primary"
-          style={{ marginLeft: "20px" }}
-          onClick={() =>
-            set_notification(
-              "warning",
-              "Developing",
-              "It will be finished in the next version"
-            )
-          }
-        >
-          Add a relation
-        </Button>
-
-        <Button
-          type="primary"
-          style={{ marginLeft: "20px" }}
-          onClick={this.fn_downloadResult}
-        >
-          Download
-        </Button>
       </React.Fragment>
     );
   }
