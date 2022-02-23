@@ -15,10 +15,15 @@ export default class InputData extends Component {
     super(props);
     this.state = {
       current_step: 0,
+      number_of_users: null,
+      number_of_figures: null,
     };
   }
 
   componentDidMount = () => {
+    //=========================
+    //build monthly bar chart
+    //=========================
     const data = [
       { name: "User", month: "Mar.2021", numbers: 0 },
       { name: "User", month: "Apr.2021", numbers: 0 },
@@ -80,12 +85,29 @@ export default class InputData extends Component {
     chart.interaction("active-region");
 
     chart.render();
+
+    //=======================================
+    //ger total number of users and figures
+    //=======================================
+    this.fetch_numbers();
   };
 
-  // onChange = current => {
-  //   console.log('onChange:', current);
-  //   this.setState({ current });
-  // };
+  fetch_numbers = () => {
+    let requestOptions = {
+      method: "GET",
+    };
+    fetch(process.env.REACT_APP_API + "/get_numbers", requestOptions)
+      .then((response) => response.json())
+      .then((info) => this.handleNumbers(info))
+      .catch((error) => console.log("error", error));
+  };
+
+  handleNumbers = (info) => {
+    this.setState({
+      number_of_users:info.users,
+      number_of_figures:info.figures,
+    })
+  }
 
   onChangeSteps = (current) => {
     this.setState({
@@ -120,7 +142,7 @@ export default class InputData extends Component {
                       fontSize: "1.5rem",
                     }}
                   >
-                    53
+                    {this.state.number_of_figures}
                   </Typography>
                 </CardContent>
               </Card>
@@ -147,7 +169,7 @@ export default class InputData extends Component {
                       fontSize: "1.5rem",
                     }}
                   >
-                    8
+                    {this.state.number_of_users}
                   </Typography>
                 </CardContent>
               </Card>
@@ -155,7 +177,13 @@ export default class InputData extends Component {
           </Grid>
 
           <Grid item sm={10}>
-            <Card style={{ height: "210px", backgroundColor: "rgb(47,101,203, 0.08)" }} variant="none">
+            <Card
+              style={{
+                height: "210px",
+                backgroundColor: "rgb(47,101,203, 0.08)",
+              }}
+              variant="none"
+            >
               <CardContent>
                 <Typography
                   component="div"
