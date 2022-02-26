@@ -59,8 +59,8 @@ export default class Prediction extends Component {
     form_data.append("job_name", job_name);
     form_data.append("file_type", this.state.file_uploaded_type);
     //****** create head */
-    var myHeaders = new Headers();
-    myHeaders.append("Content-Type", "multipart/form-data");
+    // var myHeaders = new Headers();
+    // myHeaders.append("Content-Type", "multipart/form-data");
     var requestOptions = {
       method: "POST",
       body: form_data,
